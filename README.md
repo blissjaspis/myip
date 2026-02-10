@@ -2,7 +2,7 @@
 
 A modern, fast, and privacy-focused tool to check your public IP address and network information. Built with the latest Laravel ecosystem stack.
 
-![IP Checker Preview](https://placehold.co/800x400?text=IP+Checker+Preview)
+![IP Checker Preview](./public/images/ss-demo.png)
 
 ## 🚀 Stack
 
