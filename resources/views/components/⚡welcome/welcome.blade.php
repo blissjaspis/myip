@@ -1,3 +1,7 @@
+@php
+    $connectionIsIpv4 = (bool) filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+    $connectionIsIpv6 = (bool) filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
+@endphp
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4 selection:bg-indigo-500 selection:text-white">
     <div class="max-w-2xl w-full bg-white dark:bg-gray-800 shadow-2xl rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-indigo-500/20">
         
@@ -100,9 +104,10 @@
                 </div>
             </div>
 
-            <!-- Client Side Checks for v4/v6 -->
-            <div x-data="ipChecker()" x-init="checkIps()" class="border-t border-dashed border-gray-200 dark:border-gray-700 pt-8">
-                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6 text-center">Protocol Connectivity Check</h3>
+            <!-- v4/v6: same address as "Current connection" when the browser used that protocol to reach this site (avoids a second connection / CGNAT mismatch). -->
+            <div x-data="ipChecker(@js($ip), @js($connectionIsIpv4), @js($connectionIsIpv6))" x-init="checkIps()" class="border-t border-dashed border-gray-200 dark:border-gray-700 pt-8">
+                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 text-center">Protocol Connectivity</h3>
+                 <p class="text-center text-xs text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">Matches your connection to this page when the protocol is the same (see details below).</p>
                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- IPv4 -->
                     <div class="relative group p-4 rounded-xl transition-all duration-300" :class="ipv4 ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50' : 'bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700'">
@@ -166,6 +171,14 @@
                  </div>
             </div>
 
+            <details class="text-sm text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50/80 dark:bg-gray-800/50">
+                <summary class="cursor-pointer font-medium text-gray-600 dark:text-gray-300 select-none">How this relates to other “What is my IP” sites</summary>
+                <div class="mt-3 space-y-2 text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p>Sites like WhatIsMyIPAddress usually show the address they see for <strong>the single request</strong> you make to <em>their</em> server. This page does the same for <strong>this</strong> site: the large “Current connection” value is the address our server saw for your visit.</p>
+                    <p>Previously, the IPv4 line called a <strong>second</strong> service (ipify) from your browser. On mobile networks that is often a <em>separate</em> path through carrier NAT, so you could get a different public IPv4 than the one used to load this page. We now reuse the same address for IPv4/IPv6 when it matches the protocol you used here, so the page stays self-consistent. If you use IPv4 to reach this site, IPv4 shown here will match; other tools may still differ if they are another connection to another provider.</p>
+                </div>
+            </details>
+
         </div>
         
         <!-- Footer Actions -->
@@ -179,43 +192,53 @@
     </div>
 
     <script>
-        function ipChecker() {
+        function ipChecker(serverIp, connectionIsIpv4, connectionIsIpv6) {
             return {
-                ipv4: null,
-                ipv6: null,
-                loadingV4: true,
-                loadingV6: true,
+                serverIp: serverIp,
+                connectionIsIpv4: connectionIsIpv4,
+                connectionIsIpv6: connectionIsIpv6,
+                ipv4: connectionIsIpv4 ? serverIp : null,
+                ipv6: connectionIsIpv6 ? serverIp : null,
+                loadingV4: !connectionIsIpv4,
+                loadingV6: !connectionIsIpv6,
                 copiedV4: false,
                 copiedV6: false,
-                async checkIps() {
-                    this.loadingV4 = true;
-                    this.loadingV6 = true;
+                checkIps() {
+                    if (this.connectionIsIpv4) {
+                        this.ipv4 = this.serverIp;
+                        this.loadingV4 = false;
+                    } else {
+                        this.loadingV4 = true;
+                        fetch('https://api.ipify.org?format=json')
+                            .then(res => res.json())
+                            .then(data => {
+                                this.ipv4 = data.ip;
+                            })
+                            .catch(() => {
+                                this.ipv4 = null;
+                            })
+                            .finally(() => {
+                                this.loadingV4 = false;
+                            });
+                    }
 
-                    // Check IPv4
-                    fetch('https://api.ipify.org?format=json')
-                        .then(res => res.json())
-                        .then(data => {
-                            this.ipv4 = data.ip;
-                        })
-                        .catch(e => {
-                            this.ipv4 = null;
-                        })
-                        .finally(() => {
-                            this.loadingV4 = false;
-                        });
-
-                    // Check IPv6
-                    fetch('https://api6.ipify.org?format=json')
-                        .then(res => res.json())
-                        .then(data => {
-                            this.ipv6 = data.ip;
-                        })
-                        .catch(e => {
-                            this.ipv6 = null;
-                        })
-                        .finally(() => {
-                            this.loadingV6 = false;
-                        });
+                    if (this.connectionIsIpv6) {
+                        this.ipv6 = this.serverIp;
+                        this.loadingV6 = false;
+                    } else {
+                        this.loadingV6 = true;
+                        fetch('https://api6.ipify.org?format=json')
+                            .then(res => res.json())
+                            .then(data => {
+                                this.ipv6 = data.ip;
+                            })
+                            .catch(() => {
+                                this.ipv6 = null;
+                            })
+                            .finally(() => {
+                                this.loadingV6 = false;
+                            });
+                    }
                 }
             }
         }
