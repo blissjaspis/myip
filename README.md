@@ -2,6 +2,8 @@
 
 A modern, fast, and privacy-focused tool to check your public IP address and network information. Built with the latest Laravel ecosystem stack.
 
+**Repository:** [github.com/blissjaspis/myip](https://github.com/blissjaspis/myip) · `git clone https://github.com/blissjaspis/myip.git`
+
 ![IP Checker Preview](./public/images/ss-demo.png)
 
 ## 🚀 Stack
@@ -25,7 +27,7 @@ A modern, fast, and privacy-focused tool to check your public IP address and net
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/blissjaspis/myip.git
    cd myip
    ```
 

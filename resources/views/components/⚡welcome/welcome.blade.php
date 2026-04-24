@@ -182,12 +182,21 @@
         </div>
         
         <!-- Footer Actions -->
-        <div class="bg-gray-50 dark:bg-gray-800/50 p-6 flex justify-center border-t border-gray-100 dark:border-gray-700">
+        <div class="bg-gray-50 dark:bg-gray-800/50 p-6 flex flex-col items-center justify-center gap-4 border-t border-gray-100 dark:border-gray-700">
             <button wire:click="refresh" class="group flex items-center px-6 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-sm hover:shadow-md transition-all text-gray-700 dark:text-gray-200 font-medium hover:border-indigo-300 dark:hover:border-indigo-500">
                 <svg wire:loading.animate="spin" class="w-5 h-5 mr-2 text-indigo-500 group-hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 <span wire:loading.remove>Refresh Data</span>
                 <span wire:loading>Refreshing...</span>
             </button>
+            <a
+                href="https://github.com/blissjaspis/myip"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors"
+            >
+                <svg class="h-5 w-5" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.012-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.32-22.23-5.412-22.23-24.18 0-5.355 1.88-9.68 4.99-13.1-.48-1.32-2.2-6.3.45-13.1 0 0 4.05-1.3 13.2 4.8a45.4 45.4 0 0 1 12-1.6c4.1 0 8.1.5 12 1.6 9.1-6.1 13.1-4.8 13.1-4.8 2.6 6.8.8 11.7.4 13.1 3.1 3.4 4.9 7.7 4.9 13.1 0 18.8-11.4 22.7-22.2 24 1.8 1.5 3.3 4.3 3.3 8.5 0 6.1-.1 11.1-.1 12.5 0 1.2.8 2.6 3.2 2.2C85 89.1 98.1 70.5 98.1 49.2 98.1 22 75.4 0 48.9 0h-.1z"></path></svg>
+                <span>Open source on GitHub</span>
+            </a>
         </div>
     </div>
 
