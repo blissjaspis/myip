@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\Cloudflare;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 
@@ -18,8 +19,8 @@ new class extends Component
     {
         $this->loading = true;
         
-        // Get the IP address
-        $this->ip = request()->ip();
+        // Visitor address. Cloudflare replaces REMOTE_ADDR with a proxy address.
+        $this->ip = Cloudflare::clientIp(request());
 
         // Handle local environment
         if (app()->environment('local') && in_array($this->ip, ['127.0.0.1', '::1'])) {
